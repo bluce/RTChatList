@@ -112,8 +112,8 @@ namespace ui {
     public:
         RTElementEmoji(){_type = Type::CUSTOM;};
         virtual ~RTElementEmoji(){CC_SAFE_RELEASE(_customNode);};
-        bool init(int tag, const Color3B& color, GLubyte opacity, Size s, const Vector<cocos2d::SpriteFrame *> &arrayOfSpriteFrameNames);
-        static RTElementEmoji* create(int tag, const Color3B& color, GLubyte opacity, Size s, const Vector<cocos2d::SpriteFrame *> &arrayOfSpriteFrameNames);
+        bool init(int tag, const Color3B& color, GLubyte opacity, Size s, int emojiId);
+        static RTElementEmoji* create(int tag, const Color3B& color, GLubyte opacity, Size s, int emojiId);
         
     protected:
         Node* _customNode;

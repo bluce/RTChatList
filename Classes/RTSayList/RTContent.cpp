@@ -28,6 +28,7 @@
 #include "2d/CCSprite.h"
 #include "base/ccUTF8.h"
 #include "ui/UIHelper.h"
+#include "RTEmojiSprite.h"
 
 NS_CC_BEGIN
 
@@ -131,25 +132,16 @@ namespace ui {
         return false;
     }
     
-    bool RTElementEmoji::init(int tag, const Color3B& color, GLubyte opacity, Size s, const Vector<cocos2d::SpriteFrame *> &arrayOfSpriteFrameNames)
+    bool RTElementEmoji::init(int tag, const cocos2d::Color3B &color, GLubyte opacity, cocos2d::Size s, int emojiId)
     {
-        if (!arrayOfSpriteFrameNames.size()) {
-            return false;
-        }
-        auto sp = Sprite::createWithSpriteFrame(arrayOfSpriteFrameNames.at(0));
-        sp->setScale(s.width / sp->getBoundingBox().size.width, s.height / sp->getBoundingBox().size.height);
-        auto anim = Animation::createWithSpriteFrames(arrayOfSpriteFrameNames);
-        anim->setDelayPerUnit(0.2f);
-        anim->setRestoreOriginalFrame(true);
-        auto a = Animate::create(anim);
-        sp->runAction(RepeatForever::create(a));
+        auto sp = RTEmojiSprite::create(emojiId, s);
         return RTElementCustomNode::init(tag, color, opacity, sp);
     }
     
-    RTElementEmoji* RTElementEmoji::create(int tag, const Color3B& color, GLubyte opacity, Size s, const Vector<cocos2d::SpriteFrame *> &arrayOfSpriteFrameNames)
+    RTElementEmoji* RTElementEmoji::create(int tag, const cocos2d::Color3B &color, GLubyte opacity, cocos2d::Size s, int emojiId)
     {
         RTElementEmoji* element = new (std::nothrow) RTElementEmoji();
-        if (element && element->init(tag, color, opacity, s, arrayOfSpriteFrameNames))
+        if (element && element->init(tag, color, opacity, s, emojiId))
         {
             element->autorelease();
             return element;

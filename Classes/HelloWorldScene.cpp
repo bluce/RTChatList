@@ -3,6 +3,7 @@
 #include "RTParser.h"
 #include "DbgHelper.h"
 #include "RTChatList.h"
+#include "RTEmojiSprite.h"
 
 USING_NS_CC;
 
@@ -69,37 +70,41 @@ bool HelloWorld::init()
     std::string json = FileUtils::getInstance()->getStringFromFile("res/test.json");
     
     //test animate
-//    Size s = Size(80, 80);
-//    Vector<cocos2d::SpriteFrame *> frames;
-//    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("res/emoji.plist");
-//    for (int i = 0; i < 30; i++) {
-//        auto spf = SpriteFrameCache::getInstance()->getSpriteFrameByName(StringUtils::format("emoji_%d_%02d.png", 1, i));
-//        if (!spf) {
-//            continue;
-//        }
-//        frames.pushBack(spf);
-//    }
-//    auto sp = Sprite::createWithSpriteFrame(frames.at(0));
-//    sp->setScale(s.width / sp->getBoundingBox().size.width, s.height / sp->getBoundingBox().size.height);
-//    auto anim = Animation::createWithSpriteFrames(frames);
-//    anim->setDelayPerUnit(0.2f);
-//    anim->setRestoreOriginalFrame(true);
-//    auto a = Animate::create(anim);
-//    sp->runAction(RepeatForever::create(a));
-//    
-//    sp->setPosition(Point(visibleSize.width / 2.0, visibleSize.height / 2.0));
-//    this->addChild(sp);
+#if 0
+    Size s = Size(80, 80);
+    Vector<cocos2d::SpriteFrame *> frames;
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("res/emoji.plist");
+    for (int i = 0; i < 30; i++) {
+        auto spf = SpriteFrameCache::getInstance()->getSpriteFrameByName(StringUtils::format("emoji_%d_%02d.png", 1, i));
+        if (!spf) {
+            continue;
+        }
+        frames.pushBack(spf);
+    }
+    auto sp = Sprite::createWithSpriteFrame(frames.at(0));
+    sp->setScale(s.width / sp->getBoundingBox().size.width, s.height / sp->getBoundingBox().size.height);
+    auto anim = Animation::createWithSpriteFrames(frames);
+    anim->setDelayPerUnit(0.2f);
+    anim->setRestoreOriginalFrame(true);
+    auto a = Animate::create(anim);
+    sp->runAction(RepeatForever::create(a));
     
+    sp->setPosition(Point(visibleSize.width / 2.0, visibleSize.height / 2.0));
+    this->addChild(sp);
+#endif
     
+    //test list
+#if 1
     DbgHelper::colorRect(this,
                          Rect(100, 100, 460, 460),
                          Color4F::GRAY,
                          1);
+    
     auto list = RTChatList::create(size);
     list->setPosition(Point(100, 100));
     this->addChild(list);
     
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 20; i++) {
         if (i % 2 == 0) {
             auto sn = RTChatNode::create(RTChatNode::OwnType::SELF, RTChatNode::OptType::ALL, "［Hello World!］", json);
             list->pushNode(sn);
@@ -109,11 +114,22 @@ bool HelloWorld::init()
             list->pushNode(sn);
         }
     }
+#endif
+
+    //test single node
+#if 0
+    auto sn = RTChatNode::create(RTChatNode::OwnType::SELF, RTChatNode::OptType::ALL, "［Hello World!］", json);
+    auto n = sn->getNode();
+    n->setPosition(Point(visibleSize.width / 2.0, visibleSize.height / 2.0));
+    this->addChild(n);
+#endif
     
-    
-//    auto sn = RTChatNode::create(RTChatNode::OwnType::SELF, RTChatNode::OptType::ALL, "［Hello World!］", json);
-//    sn->setPosition(Point(visibleSize.width / 2.0, visibleSize.height / 2.0));
-//    this->addChild(sn);
+    //test emoji sprite
+#if 0
+    auto s = RTEmojiSprite::create(1, size);
+    s->setPosition(Point(visibleSize.width / 2.0, visibleSize.height / 2.0));
+    this->addChild(s);
+#endif
     
     return true;
 }

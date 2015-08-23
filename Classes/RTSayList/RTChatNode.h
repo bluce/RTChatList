@@ -11,7 +11,7 @@
 
 #include "cocos2d.h"
 
-class RTChatNode : public cocos2d::Ref
+class RTChatNode : public cocos2d::Node
 {
    
 public:
@@ -36,9 +36,6 @@ public:
     
     virtual bool init(OwnType own, OptType opt, const std::string & title, const std::string & content);
     
-    cocos2d::Node* getNode();
-    
-    const cocos2d::Size getContentSize() const { return _contentSize; }
     const OwnType getOwnType() const { return _own; }
     const OptType getOptType() const { return _opt; }
     const std::string getTitle() const { return _title; }
@@ -46,7 +43,6 @@ public:
     
 private:
     
-    cocos2d::Size _contentSize = cocos2d::Size::ZERO;
     OwnType _own;
     OptType _opt;
     std::string _title;

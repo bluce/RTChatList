@@ -34,7 +34,7 @@ bool RTParser::pushElements(RTContent *rt, const std::string &json)
         }
         
         std::string type = "";      //类型
-        int em = -1;                //表情id
+        int emojiId = -1;                //表情id
         std::string txt = "";       //文本
         
         rapidjson::Value& jtype = jvo["type"];
@@ -57,7 +57,7 @@ bool RTParser::pushElements(RTContent *rt, const std::string &json)
         if (type != "t") {
             rapidjson::Value& jem = jvo["e"];
             if (jem.IsInt()) {
-                em = jem.GetInt();
+                emojiId = jem.GetInt();
                 type = "e";
             }
         }
@@ -128,18 +128,7 @@ bool RTParser::pushElements(RTContent *rt, const std::string &json)
                 fh = jh.GetInt();
             }
             
-            Vector<cocos2d::SpriteFrame *> frames;
-            SpriteFrameCache::getInstance()->addSpriteFramesWithFile("res/emoji.plist");
-           
-            for (int i = 0; i < 30; i++) {
-                auto spf = SpriteFrameCache::getInstance()->getSpriteFrameByName(StringUtils::format("emoji_%d_%02d.png", em, i));
-                if (!spf) {
-                    continue;
-                }
-                frames.pushBack(spf);
-            }
-            
-            rt->pushBackElement(RTElementEmoji::create(i, Default_Font_Color, Default_Font_Alpha, Size(fw, fh), frames));
+            rt->pushBackElement(RTElementEmoji::create(i, Default_Font_Color, Default_Font_Alpha, Size(fw, fh), emojiId));
         }
     }
     

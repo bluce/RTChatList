@@ -68,12 +68,7 @@ bool RTChatNode::init(OwnType own, OptType opt, const std::string &title, const 
     _title = std::string(title);
     _content = std::string(content);
     
-    return true;
-}
-
-cocos2d::Node* RTChatNode::getNode()
-{
-    auto n = Node::create();
+    auto n = this;
     
     //创建富文本标签
     auto txt = RTContent::create();
@@ -328,6 +323,5 @@ cocos2d::Node* RTChatNode::getNode()
             break;
     }
     
-    _contentSize = n->getContentSize();
-    return n;
+    return true;
 }

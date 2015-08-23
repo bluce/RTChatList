@@ -116,13 +116,7 @@ void RTChatList::tableCellWillRecycle(TableView* table, TableViewCell* cell)
  */
 Size RTChatList::tableCellSizeForIndex(TableView *table, ssize_t idx) {
     RTChatNode* sn = _sayNodeList.at(idx);
-    if (Vec2::ZERO == sn->getContentSize()) {
-        auto n = sn->getNode();
-        return Size(0, Default_Cell_Offset_Height + n->getContentSize().height + Default_Cell_Offset_Height);
-    }
-    else {
-        return Size(0, Default_Cell_Offset_Height + sn->getContentSize().height + Default_Cell_Offset_Height);
-    }
+    return Size(0, Default_Cell_Offset_Height + sn->getContentSize().height + Default_Cell_Offset_Height);
 }
 
 /**
@@ -152,8 +146,9 @@ TableViewCell* RTChatList::tableCellAtIndex(TableView *table, ssize_t idx)
     if (cell) {
         cell->removeAllChildren();
         
-        auto sn = _sayNodeList.at(idx);
-        auto n = sn->getNode();
+        auto n = _sayNodeList.at(idx);
+        n->removeFromParent();
+        
         cell->setContentSize(Size(table->getContentSize().width, Default_Cell_Offset_Height + n->getContentSize().height + Default_Cell_Offset_Height));
         
         if (idx % 2 == 0) {
@@ -167,7 +162,7 @@ TableViewCell* RTChatList::tableCellAtIndex(TableView *table, ssize_t idx)
                                  Color4F::YELLOW);
         }
         
-        if (sn->getOwnType() == RTChatNode::OwnType::SELF) {
+        if (n->getOwnType() == RTChatNode::OwnType::SELF) {
             n->setPosition(Point(cell->getContentSize().width / 2.0 + Default_Cell_Offset_Width, cell->getContentSize().height / 2.0));
         }
         else {
