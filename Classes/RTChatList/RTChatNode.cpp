@@ -11,9 +11,11 @@
 #include "RTParser.h"
 #include "RTContent.h"
 
-#define Default_Max_Node_Width      400
+#define RTChatNode_Width_Default      400
+#define RTChatNode_WOffset_Default   10
+
 #define Default_Max_Node_Height     600
-#define Default_Node_Offset_Width   10
+
 #define Default_Node_Offset_Height  10
 
 #define Default_Font_Size           32.0
@@ -53,10 +55,12 @@ RTChatNode* RTChatNode::create(FormType form,
                                OwnType own,
                                OptType opt,
                                const std::string &title,
-                               const std::string &content)
+                               const std::string &content,
+                               float width,
+                               float widthOffset)
 {
     auto n = new (std::nothrow) RTChatNode();
-    if (n && n->init(form, own, opt, title, content)) {
+    if (n && n->init(form, own, opt, title, content, width, widthOffset)) {
         n->autorelease();
     }
     else {
@@ -65,7 +69,13 @@ RTChatNode* RTChatNode::create(FormType form,
     return n;
 }
 
-bool RTChatNode::init(FormType form, OwnType own, OptType opt, const std::string &title, const std::string &content)
+bool RTChatNode::init(FormType form,
+                      OwnType own,
+                      OptType opt,
+                      const std::string &title,
+                      const std::string &content,
+                      float width,
+                      float widthOffset)
 {
     _form = form;
     _own = own;
@@ -73,21 +83,30 @@ bool RTChatNode::init(FormType form, OwnType own, OptType opt, const std::string
     _title = std::string(title);
     _content = std::string(content);
     
+    if (width != -1) {
+        _width = width;
+    }
+    else {
+        _width = RTChatNode_Width_Default;
+    }
+    
+    if (widthOffset != -1) {
+        _widthOffset = widthOffset;
+    }
+    else {
+        _widthOffset = RTChatNode_WOffset_Default;
+    }
+    
     auto n = this;
     
     //创建富文本标签
     auto txt = RTContent::create();
     n->addChild(txt, zContent, tContent);
+    txt->ignoreContentAdaptWithSize(false);
+    txt->setContentSize(Size(_width - (_widthOffset * 2), Default_Max_Node_Height));
     
     //使用内容填充富文本，获取rect
     RTParser::pushElements(txt, _content);
-    
-    Size sz = txt->getContentSize();
-    float width = Default_Max_Node_Width - (Default_Node_Offset_Width * 2);
-    float height = Default_Max_Node_Height;
-    txt->ignoreContentAdaptWithSize(false);
-    txt->setContentSize(Size(width, height));
-    
     txt->formatText();
     
     switch (form) {
@@ -135,7 +154,7 @@ bool RTChatNode::init(FormType form, OwnType own, OptType opt, const std::string
                     n->addChild(lb, zTitleLabel, tTitleLabel);
                     
                     //使用 空白 - 富文本高度 - 空白 - 标签 - 空白 确定容器高度
-                    Size containerSize = Size(Default_Max_Node_Width,
+                    Size containerSize = Size(_width,
                                               Default_Node_Offset_Height + lb->getContentSize().height + Default_Node_Offset_Height + txt->getContentSize().height + Default_Node_Offset_Height);
                     
                     n->setContentSize(containerSize);
@@ -143,9 +162,9 @@ bool RTChatNode::init(FormType form, OwnType own, OptType opt, const std::string
                     
                     //设置标签位置
                     float titleY = n->getContentSize().height / 2.0 - Default_Node_Offset_Height - (icon->getContentSize().height / 2.0);
-                    icon->setPosition(Point(n->getContentSize().width / 2.0 - (icon->getContentSize().width / 2.0) - Default_Node_Offset_Width - Default_Node_Offset_Width,
+                    icon->setPosition(Point(n->getContentSize().width / 2.0 - (icon->getContentSize().width / 2.0) - _widthOffset - _widthOffset,
                                             titleY));
-                    lb->setPosition(Point(n->getContentSize().width / 2.0 - (lb->getContentSize().width / 2.0) - Default_Node_Offset_Width - icon->getContentSize().width - Default_Node_Offset_Width - Default_Node_Offset_Width,
+                    lb->setPosition(Point(n->getContentSize().width / 2.0 - (lb->getContentSize().width / 2.0) - _widthOffset - icon->getContentSize().width - _widthOffset - _widthOffset,
                                           titleY));
                     
                     //设置富文本位置
@@ -198,7 +217,7 @@ bool RTChatNode::init(FormType form, OwnType own, OptType opt, const std::string
                     n->addChild(lb, zTitleLabel, tTitleLabel);
                     
                     //使用 空白 - 富文本高度 - 空白 - 标签 - 空白 确定容器高度
-                    Size containerSize = Size(Default_Max_Node_Width,
+                    Size containerSize = Size(_width,
                                               Default_Node_Offset_Height + lb->getContentSize().height + Default_Node_Offset_Height + txt->getContentSize().height + Default_Node_Offset_Height);
                     
                     n->setContentSize(containerSize);
@@ -206,13 +225,13 @@ bool RTChatNode::init(FormType form, OwnType own, OptType opt, const std::string
                     
                     //设置标签位置
                     float titleY = n->getContentSize().height / 2.0 - Default_Node_Offset_Height - (icon->getContentSize().height / 2.0);
-                    icon->setPosition(Point( - (n->getContentSize().width / 2.0) + (icon->getContentSize().width / 2.0) + Default_Node_Offset_Width + Default_Node_Offset_Width,
+                    icon->setPosition(Point( - (n->getContentSize().width / 2.0) + (icon->getContentSize().width / 2.0) + _widthOffset + _widthOffset,
                                             titleY));
-                    lb->setPosition(Point(- (n->getContentSize().width / 2.0) + (lb->getContentSize().width / 2.0) + Default_Node_Offset_Width + icon->getContentSize().width + Default_Node_Offset_Width + Default_Node_Offset_Width,
+                    lb->setPosition(Point(- (n->getContentSize().width / 2.0) + (lb->getContentSize().width / 2.0) + _widthOffset + icon->getContentSize().width + _widthOffset + _widthOffset,
                                           titleY));
                     
                     //设置富文本位置
-                    txt->setPosition(Point(0 + Default_Node_Offset_Width, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
+                    txt->setPosition(Point(0 + _widthOffset, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
                 }
                     break;
                 default:
@@ -264,20 +283,20 @@ bool RTChatNode::init(FormType form, OwnType own, OptType opt, const std::string
             n->addChild(lb, zTitleLabel, tTitleLabel);
             
             //使用 空白 - 富文本高度 - 空白 - 标签 - 空白 确定容器高度
-            Size containerSize = Size(Default_Max_Node_Width,
-                                      Default_Node_Offset_Height + lb->getContentSize().height + Default_Node_Offset_Height + txt->getContentSize().height + Default_Node_Offset_Height);
+            Size containerSize = Size(_width,
+                                      lb->getContentSize().height + Default_Node_Offset_Height + txt->getContentSize().height);
             
             n->setContentSize(containerSize);
             
             //设置标签位置
-            float titleY = n->getContentSize().height / 2.0 - Default_Node_Offset_Height - (icon->getContentSize().height / 2.0);
-            icon->setPosition(Point( - (n->getContentSize().width / 2.0) + (icon->getContentSize().width / 2.0) + Default_Node_Offset_Width + Default_Node_Offset_Width,
+            float titleY = n->getContentSize().height / 2.0 - (icon->getContentSize().height / 2.0);
+            icon->setPosition(Point( - (n->getContentSize().width / 2.0) + (icon->getContentSize().width / 2.0) + _widthOffset + _widthOffset,
                                     titleY));
-            lb->setPosition(Point(- (n->getContentSize().width / 2.0) + (lb->getContentSize().width / 2.0) + Default_Node_Offset_Width + icon->getContentSize().width + Default_Node_Offset_Width + Default_Node_Offset_Width,
+            lb->setPosition(Point(- (n->getContentSize().width / 2.0) + (lb->getContentSize().width / 2.0) + _widthOffset + icon->getContentSize().width + _widthOffset + _widthOffset,
                                   titleY));
             
             //设置富文本位置
-            txt->setPosition(Point(0 + Default_Node_Offset_Width, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
+            txt->setPosition(Point(0 + _widthOffset, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
             
         }
         default:

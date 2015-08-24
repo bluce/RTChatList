@@ -18,8 +18,17 @@ class DbgHelper {
 public:
     
     static void setDebugLevel(int level);
-    static void colorRect(Node* parent, const Point& center, const Size& size, const Color4F& color, int level = 0);
-    static void colorRect(Node* parent, const Rect& r, const Color4F& color, int level = 0);
+    static void colorRect(Node* parent,
+                          const Point& center,
+                          const Size& size,
+                          const Color4F& color,
+                          int level = 0,
+                          int zOrder = 0);
+    static void colorRect(Node* parent,
+                          const Rect& r,
+                          const Color4F& color,
+                          int level = 0,
+                          int zOrder = 0);
     
 private:
     

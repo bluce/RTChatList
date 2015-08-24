@@ -9,18 +9,18 @@
 /* Begin PBXBuildFile section */
 		1AC6FB21180E996B004C840B /* libcocos2d Mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC6FAF9180E9839004C840B /* libcocos2d Mac.a */; };
 		1AC6FB30180E99EB004C840B /* libcocos2d iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC6FB07180E9839004C840B /* libcocos2d iOS.a */; };
-		1CB628641B893ADD00606FB0 /* RTEmojiSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1CB628621B893ADD00606FB0 /* RTEmojiSprite.cpp */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		2C7E7ECE1B889B770095B618 /* AppDelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7EBC1B889B770095B618 /* AppDelegate.cpp */; };
 		2C7E7ECF1B889B770095B618 /* HelloWorldScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7EBE1B889B770095B618 /* HelloWorldScene.cpp */; };
-		2C7E7ED01B889B770095B618 /* RTContent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7EC11B889B770095B618 /* RTContent.cpp */; };
-		2C7E7ED11B889B770095B618 /* RTParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7EC31B889B770095B618 /* RTParser.cpp */; };
-		2C7E7ED21B889B770095B618 /* RTChatList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7EC51B889B770095B618 /* RTChatList.cpp */; };
-		2C7E7ED31B889B770095B618 /* RTChatNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7EC71B889B770095B618 /* RTChatNode.cpp */; };
 		2C7E7ED41B889B770095B618 /* DbgHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7ECA1B889B770095B618 /* DbgHelper.cpp */; };
 		2C7E7ED51B889B770095B618 /* FileUtilsExtension.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7ECC1B889B770095B618 /* FileUtilsExtension.cpp */; };
+		2C92E5D71B8AA3AF004F4A33 /* RTChatList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C92E5CD1B8AA3AF004F4A33 /* RTChatList.cpp */; };
+		2C92E5D81B8AA3AF004F4A33 /* RTChatNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C92E5CF1B8AA3AF004F4A33 /* RTChatNode.cpp */; };
+		2C92E5D91B8AA3AF004F4A33 /* RTContent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C92E5D11B8AA3AF004F4A33 /* RTContent.cpp */; };
+		2C92E5DA1B8AA3AF004F4A33 /* RTEmojiSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C92E5D31B8AA3AF004F4A33 /* RTEmojiSprite.cpp */; };
+		2C92E5DB1B8AA3AF004F4A33 /* RTParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C92E5D51B8AA3AF004F4A33 /* RTParser.cpp */; };
 		3EACC98F19EE6D4300EB3C5E /* res in Resources */ = {isa = PBXBuildFile; fileRef = 3EACC98E19EE6D4300EB3C5E /* res */; };
 		3EACC99019EE6D4300EB3C5E /* res in Resources */ = {isa = PBXBuildFile; fileRef = 3EACC98E19EE6D4300EB3C5E /* res */; };
 		503AE0F817EB97AB00D1A890 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 503AE0F617EB97AB00D1A890 /* Icon.icns */; };
@@ -99,8 +99,6 @@
 /* Begin PBXFileReference section */
 		1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cocos2d_libs.xcodeproj; path = ../cocos2d/build/cocos2d_libs.xcodeproj; sourceTree = "<group>"; };
 		1ACB3243164770DE00914215 /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = ../../cocos2dx/platform/third_party/ios/libraries/libcurl.a; sourceTree = "<group>"; };
-		1CB628621B893ADD00606FB0 /* RTEmojiSprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTEmojiSprite.cpp; sourceTree = "<group>"; };
-		1CB628631B893ADD00606FB0 /* RTEmojiSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTEmojiSprite.h; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* MyCppGame iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MyCppGame iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -109,18 +107,20 @@
 		2C7E7EBD1B889B770095B618 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		2C7E7EBE1B889B770095B618 /* HelloWorldScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HelloWorldScene.cpp; sourceTree = "<group>"; };
 		2C7E7EBF1B889B770095B618 /* HelloWorldScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelloWorldScene.h; sourceTree = "<group>"; };
-		2C7E7EC11B889B770095B618 /* RTContent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTContent.cpp; sourceTree = "<group>"; };
-		2C7E7EC21B889B770095B618 /* RTContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTContent.h; sourceTree = "<group>"; };
-		2C7E7EC31B889B770095B618 /* RTParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTParser.cpp; sourceTree = "<group>"; };
-		2C7E7EC41B889B770095B618 /* RTParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTParser.h; sourceTree = "<group>"; };
-		2C7E7EC51B889B770095B618 /* RTChatList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTChatList.cpp; sourceTree = "<group>"; };
-		2C7E7EC61B889B770095B618 /* RTChatList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTChatList.h; sourceTree = "<group>"; };
-		2C7E7EC71B889B770095B618 /* RTChatNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTChatNode.cpp; sourceTree = "<group>"; };
-		2C7E7EC81B889B770095B618 /* RTChatNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTChatNode.h; sourceTree = "<group>"; };
 		2C7E7ECA1B889B770095B618 /* DbgHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DbgHelper.cpp; sourceTree = "<group>"; };
 		2C7E7ECB1B889B770095B618 /* DbgHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbgHelper.h; sourceTree = "<group>"; };
 		2C7E7ECC1B889B770095B618 /* FileUtilsExtension.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUtilsExtension.cpp; sourceTree = "<group>"; };
 		2C7E7ECD1B889B770095B618 /* FileUtilsExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUtilsExtension.h; sourceTree = "<group>"; };
+		2C92E5CD1B8AA3AF004F4A33 /* RTChatList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTChatList.cpp; sourceTree = "<group>"; };
+		2C92E5CE1B8AA3AF004F4A33 /* RTChatList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTChatList.h; sourceTree = "<group>"; };
+		2C92E5CF1B8AA3AF004F4A33 /* RTChatNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTChatNode.cpp; sourceTree = "<group>"; };
+		2C92E5D01B8AA3AF004F4A33 /* RTChatNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTChatNode.h; sourceTree = "<group>"; };
+		2C92E5D11B8AA3AF004F4A33 /* RTContent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTContent.cpp; sourceTree = "<group>"; };
+		2C92E5D21B8AA3AF004F4A33 /* RTContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTContent.h; sourceTree = "<group>"; };
+		2C92E5D31B8AA3AF004F4A33 /* RTEmojiSprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTEmojiSprite.cpp; sourceTree = "<group>"; };
+		2C92E5D41B8AA3AF004F4A33 /* RTEmojiSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTEmojiSprite.h; sourceTree = "<group>"; };
+		2C92E5D51B8AA3AF004F4A33 /* RTParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTParser.cpp; sourceTree = "<group>"; };
+		2C92E5D61B8AA3AF004F4A33 /* RTParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTParser.h; sourceTree = "<group>"; };
 		3EACC98E19EE6D4300EB3C5E /* res */ = {isa = PBXFileReference; lastKnownFileType = folder; path = res; sourceTree = "<group>"; };
 		503AE0F617EB97AB00D1A890 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = "<group>"; };
 		503AE0F717EB97AB00D1A890 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -274,23 +274,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		2C7E7EC01B889B770095B618 /* RTSayList */ = {
-			isa = PBXGroup;
-			children = (
-				2C7E7EC11B889B770095B618 /* RTContent.cpp */,
-				2C7E7EC21B889B770095B618 /* RTContent.h */,
-				2C7E7EC31B889B770095B618 /* RTParser.cpp */,
-				2C7E7EC41B889B770095B618 /* RTParser.h */,
-				2C7E7EC51B889B770095B618 /* RTChatList.cpp */,
-				2C7E7EC61B889B770095B618 /* RTChatList.h */,
-				2C7E7EC71B889B770095B618 /* RTChatNode.cpp */,
-				2C7E7EC81B889B770095B618 /* RTChatNode.h */,
-				1CB628621B893ADD00606FB0 /* RTEmojiSprite.cpp */,
-				1CB628631B893ADD00606FB0 /* RTEmojiSprite.h */,
-			);
-			path = RTSayList;
-			sourceTree = "<group>";
-		};
 		2C7E7EC91B889B770095B618 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -300,6 +283,23 @@
 				2C7E7ECD1B889B770095B618 /* FileUtilsExtension.h */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		2C92E5CC1B8AA3AF004F4A33 /* RTChatList */ = {
+			isa = PBXGroup;
+			children = (
+				2C92E5CD1B8AA3AF004F4A33 /* RTChatList.cpp */,
+				2C92E5CE1B8AA3AF004F4A33 /* RTChatList.h */,
+				2C92E5CF1B8AA3AF004F4A33 /* RTChatNode.cpp */,
+				2C92E5D01B8AA3AF004F4A33 /* RTChatNode.h */,
+				2C92E5D11B8AA3AF004F4A33 /* RTContent.cpp */,
+				2C92E5D21B8AA3AF004F4A33 /* RTContent.h */,
+				2C92E5D31B8AA3AF004F4A33 /* RTEmojiSprite.cpp */,
+				2C92E5D41B8AA3AF004F4A33 /* RTEmojiSprite.h */,
+				2C92E5D51B8AA3AF004F4A33 /* RTParser.cpp */,
+				2C92E5D61B8AA3AF004F4A33 /* RTParser.h */,
+			);
+			path = RTChatList;
 			sourceTree = "<group>";
 		};
 		46880B7519C43A67006E1F66 /* Resources */ = {
@@ -314,11 +314,11 @@
 		46880B8319C43A87006E1F66 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				2C92E5CC1B8AA3AF004F4A33 /* RTChatList */,
 				2C7E7EBC1B889B770095B618 /* AppDelegate.cpp */,
 				2C7E7EBD1B889B770095B618 /* AppDelegate.h */,
 				2C7E7EBE1B889B770095B618 /* HelloWorldScene.cpp */,
 				2C7E7EBF1B889B770095B618 /* HelloWorldScene.h */,
-				2C7E7EC01B889B770095B618 /* RTSayList */,
 				2C7E7EC91B889B770095B618 /* Utils */,
 			);
 			name = Classes;
@@ -511,15 +511,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C7E7ECE1B889B770095B618 /* AppDelegate.cpp in Sources */,
+				2C92E5D71B8AA3AF004F4A33 /* RTChatList.cpp in Sources */,
 				2C7E7ECF1B889B770095B618 /* HelloWorldScene.cpp in Sources */,
-				2C7E7ED31B889B770095B618 /* RTChatNode.cpp in Sources */,
-				1CB628641B893ADD00606FB0 /* RTEmojiSprite.cpp in Sources */,
+				2C92E5DA1B8AA3AF004F4A33 /* RTEmojiSprite.cpp in Sources */,
+				2C92E5DB1B8AA3AF004F4A33 /* RTParser.cpp in Sources */,
 				503AE10017EB989F00D1A890 /* AppController.mm in Sources */,
-				2C7E7ED11B889B770095B618 /* RTParser.cpp in Sources */,
 				2C7E7ED41B889B770095B618 /* DbgHelper.cpp in Sources */,
-				2C7E7ED01B889B770095B618 /* RTContent.cpp in Sources */,
-				2C7E7ED21B889B770095B618 /* RTChatList.cpp in Sources */,
+				2C92E5D91B8AA3AF004F4A33 /* RTContent.cpp in Sources */,
 				2C7E7ED51B889B770095B618 /* FileUtilsExtension.cpp in Sources */,
+				2C92E5D81B8AA3AF004F4A33 /* RTChatNode.cpp in Sources */,
 				503AE10217EB989F00D1A890 /* RootViewController.mm in Sources */,
 				503AE10117EB989F00D1A890 /* main.m in Sources */,
 			);

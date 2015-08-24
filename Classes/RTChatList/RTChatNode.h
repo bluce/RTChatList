@@ -41,19 +41,25 @@ public:
                               OwnType own,
                               OptType opt,
                               const std::string& title,
-                              const std::string& content);
+                              const std::string& content,
+                              float width = -1,
+                              float widthOffset = -1);
     
     virtual bool init(FormType form,
                       OwnType own,
                       OptType opt,
                       const std::string& title,
-                      const std::string& content);
+                      const std::string& content,
+                      float width = -1,
+                      float widthOffset = -1);
     
     const FormType getFormType() const { return _form; }
     const OwnType getOwnType() const { return _own; }
     const OptType getOptType() const { return _opt; }
     const std::string getTitle() const { return _title; }
     const std::string getContent() const { return _content; }
+    const float getWidth() const { return _width; }
+    const float getWidthOffset() const { return _widthOffset; }
     
 private:
     
@@ -62,7 +68,8 @@ private:
     OptType _opt;
     std::string _title;
     std::string _content;
-    
+    float _width;
+    float _widthOffset;
 };
 
 #endif /* defined(__MyCppGame__RTChatNode__) */

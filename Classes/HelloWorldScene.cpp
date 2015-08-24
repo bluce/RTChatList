@@ -61,7 +61,7 @@ bool HelloWorld::init()
         return false;
     }
     
-    DbgHelper::setDebugLevel(1);
+    DbgHelper::setDebugLevel(-1);
     
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -94,7 +94,7 @@ bool HelloWorld::init()
 #endif
     
     //test bordered list
-#if 0
+#if 1
     DbgHelper::colorRect(this,
                          Rect(100, 100, 460, 460),
                          Color4F::GRAY,
@@ -117,7 +117,7 @@ bool HelloWorld::init()
 #endif
     
     //test clear list
-#if 1
+#if 0
     DbgHelper::colorRect(this,
                          Rect(100, 100, 460, 460),
                          Color4F::GRAY,
@@ -129,11 +129,11 @@ bool HelloWorld::init()
     
     for (int i = 0; i < 20; i++) {
         if (i % 2 == 0) {
-            auto sn = RTChatNode::create(RTChatNode::FormType::CLEAR, RTChatNode::OwnType::SELF, RTChatNode::OptType::ALL, "［Hello World!］", json);
+            auto sn = RTChatNode::create(RTChatNode::FormType::CLEAR, RTChatNode::OwnType::SELF, RTChatNode::OptType::ALL, "［Hello World!］", json, 460, 10);
             list->pushNode(sn);
         }
         else {
-            auto sn = RTChatNode::create(RTChatNode::FormType::CLEAR, RTChatNode::OwnType::OTHER, RTChatNode::OptType::SYSTEM, "［Hello World!］", json);
+            auto sn = RTChatNode::create(RTChatNode::FormType::CLEAR, RTChatNode::OwnType::OTHER, RTChatNode::OptType::SYSTEM, "［Hello World!］", json, 460, 10);
             list->pushNode(sn);
         }
     }
