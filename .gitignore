@@ -1,3 +1,7 @@
 cocos2d
 .DS_Store
+proj.android
+proj.linux
+proj.win*
+proj.wp*
 xcuserdata

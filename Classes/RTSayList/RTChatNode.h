@@ -17,6 +17,11 @@ class RTChatNode : public cocos2d::Node
 public:
     
     typedef enum : int {
+        CLEAR,   //自己发送的话
+        BORDERED   //收到其他人发送的话
+    } FormType;
+    
+    typedef enum : int {
         SELF,   //自己发送的话
         OTHER   //收到其他人发送的话
     } OwnType;
@@ -32,10 +37,19 @@ public:
     RTChatNode();
     ~RTChatNode();
     
-    static RTChatNode* create(OwnType own, OptType opt, const std::string &title, const std::string &content);
+    static RTChatNode* create(FormType form,
+                              OwnType own,
+                              OptType opt,
+                              const std::string& title,
+                              const std::string& content);
     
-    virtual bool init(OwnType own, OptType opt, const std::string & title, const std::string & content);
+    virtual bool init(FormType form,
+                      OwnType own,
+                      OptType opt,
+                      const std::string& title,
+                      const std::string& content);
     
+    const FormType getFormType() const { return _form; }
     const OwnType getOwnType() const { return _own; }
     const OptType getOptType() const { return _opt; }
     const std::string getTitle() const { return _title; }
@@ -43,6 +57,7 @@ public:
     
 private:
     
+    FormType _form;
     OwnType _own;
     OptType _opt;
     std::string _title;

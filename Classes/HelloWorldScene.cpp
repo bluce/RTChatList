@@ -93,7 +93,30 @@ bool HelloWorld::init()
     this->addChild(sp);
 #endif
     
-    //test list
+    //test bordered list
+#if 0
+    DbgHelper::colorRect(this,
+                         Rect(100, 100, 460, 460),
+                         Color4F::GRAY,
+                         1);
+    
+    auto list = RTChatList::create(size);
+    list->setPosition(Point(100, 100));
+    this->addChild(list);
+    
+    for (int i = 0; i < 20; i++) {
+        if (i % 2 == 0) {
+            auto sn = RTChatNode::create(RTChatNode::FormType::BORDERED, RTChatNode::OwnType::SELF, RTChatNode::OptType::ALL, "［Hello World!］", json);
+            list->pushNode(sn);
+        }
+        else {
+            auto sn = RTChatNode::create(RTChatNode::FormType::BORDERED, RTChatNode::OwnType::OTHER, RTChatNode::OptType::SYSTEM, "［Hello World!］", json);
+            list->pushNode(sn);
+        }
+    }
+#endif
+    
+    //test clear list
 #if 1
     DbgHelper::colorRect(this,
                          Rect(100, 100, 460, 460),
@@ -106,11 +129,11 @@ bool HelloWorld::init()
     
     for (int i = 0; i < 20; i++) {
         if (i % 2 == 0) {
-            auto sn = RTChatNode::create(RTChatNode::OwnType::SELF, RTChatNode::OptType::ALL, "［Hello World!］", json);
+            auto sn = RTChatNode::create(RTChatNode::FormType::CLEAR, RTChatNode::OwnType::SELF, RTChatNode::OptType::ALL, "［Hello World!］", json);
             list->pushNode(sn);
         }
         else {
-            auto sn = RTChatNode::create(RTChatNode::OwnType::OTHER, RTChatNode::OptType::SYSTEM, "［Hello World!］", json);
+            auto sn = RTChatNode::create(RTChatNode::FormType::CLEAR, RTChatNode::OwnType::OTHER, RTChatNode::OptType::SYSTEM, "［Hello World!］", json);
             list->pushNode(sn);
         }
     }

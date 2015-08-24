@@ -49,10 +49,14 @@ RTChatNode::~RTChatNode()
     
 }
 
-RTChatNode* RTChatNode::create(OwnType own, OptType opt, const std::string &title, const std::string &content)
+RTChatNode* RTChatNode::create(FormType form,
+                               OwnType own,
+                               OptType opt,
+                               const std::string &title,
+                               const std::string &content)
 {
     auto n = new (std::nothrow) RTChatNode();
-    if (n && n->init(own, opt, title, content)) {
+    if (n && n->init(form, own, opt, title, content)) {
         n->autorelease();
     }
     else {
@@ -61,8 +65,9 @@ RTChatNode* RTChatNode::create(OwnType own, OptType opt, const std::string &titl
     return n;
 }
 
-bool RTChatNode::init(OwnType own, OptType opt, const std::string &title, const std::string &content)
+bool RTChatNode::init(FormType form, OwnType own, OptType opt, const std::string &title, const std::string &content)
 {
+    _form = form;
     _own = own;
     _opt = opt;
     _title = std::string(title);
@@ -85,18 +90,44 @@ bool RTChatNode::init(OwnType own, OptType opt, const std::string &title, const 
     
     txt->formatText();
     
-    switch (_own) {
-        case OwnType::SELF:
+    switch (form) {
+        case FormType::BORDERED:
         {
-            auto bg = Scale9Sprite::create(Default_Cap_Insets, "res/say-self.png");
-            n->addChild(bg, zBg, tBg);
-            
-            switch (_opt) {
-                case OptType::ALL: //全员发送，喇叭
+            switch (_own) {
+                case OwnType::SELF:
                 {
+                    auto bg = Scale9Sprite::create(Default_Cap_Insets, "res/say-self.png");
+                    n->addChild(bg, zBg, tBg);
+                    
                     //添加标签图标
-                    auto icon = Sprite::create("res/icon-all.png");
-                    n->addChild(icon, zTitleIcon, tTitleIcon);
+                    Sprite* icon = nullptr;
+                    switch (_opt) {
+                        case OptType::ALL:
+                        {
+                            icon = Sprite::create("res/icon-all.png");
+                            n->addChild(icon, zTitleIcon, tTitleIcon);
+                        }
+                            break;
+                        case OptType::ROOM:
+                        {
+                            icon = Sprite::create("res/icon-room.png");
+                            n->addChild(icon, zTitleIcon, tTitleIcon);
+                        }
+                            break;
+                        case OptType::DESK:
+                        {
+                            icon = Sprite::create("res/icon-desk.png");
+                            n->addChild(icon, zTitleIcon, tTitleIcon);
+                        }
+                            break;
+                        case OptType::SYSTEM:
+                        default:
+                            break;
+                    }
+                    
+                    if (!icon) {
+                        return false;
+                    }
                     
                     //添加标签文本
                     auto lb = Label::createWithSystemFont(_title, Default_Font_Name, icon->getContentSize().height);
@@ -121,12 +152,45 @@ bool RTChatNode::init(OwnType own, OptType opt, const std::string &title, const 
                     txt->setPosition(Point(0, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
                 }
                     break;
-                    //ROOM,   //房间发送
-                case OptType::ROOM:
+                case OwnType::OTHER:
                 {
+                    auto bg = Scale9Sprite::create(Default_Cap_Insets, "res/say-other.png");
+                    n->addChild(bg, zBg, tBg);
+                    
                     //添加标签图标
-                    auto icon = Sprite::create("res/icon-room.png");
-                    n->addChild(icon, zTitleIcon, tTitleIcon);
+                    Sprite* icon = nullptr;
+                    switch (_opt) {
+                        case OptType::ALL:
+                        {
+                            icon = Sprite::create("res/icon-all.png");
+                            n->addChild(icon, zTitleIcon, tTitleIcon);
+                        }
+                            break;
+                        case OptType::ROOM:
+                        {
+                            icon = Sprite::create("res/icon-room.png");
+                            n->addChild(icon, zTitleIcon, tTitleIcon);
+                        }
+                            break;
+                        case OptType::DESK:
+                        {
+                            icon = Sprite::create("res/icon-desk.png");
+                            n->addChild(icon, zTitleIcon, tTitleIcon);
+                        }
+                            break;
+                        case OptType::SYSTEM:
+                        {
+                            icon = Sprite::create("res/icon-system.png");
+                            n->addChild(icon, zTitleIcon, tTitleIcon);
+                        }
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                    if (!icon) {
+                        return false;
+                    }
                     
                     //添加标签文本
                     auto lb = Label::createWithSystemFont(_title, Default_Font_Name, icon->getContentSize().height);
@@ -142,186 +206,84 @@ bool RTChatNode::init(OwnType own, OptType opt, const std::string &title, const 
                     
                     //设置标签位置
                     float titleY = n->getContentSize().height / 2.0 - Default_Node_Offset_Height - (icon->getContentSize().height / 2.0);
-                    icon->setPosition(Point(n->getContentSize().width / 2.0 - (icon->getContentSize().width / 2.0) - Default_Node_Offset_Width - Default_Node_Offset_Width,
+                    icon->setPosition(Point( - (n->getContentSize().width / 2.0) + (icon->getContentSize().width / 2.0) + Default_Node_Offset_Width + Default_Node_Offset_Width,
                                             titleY));
-                    lb->setPosition(Point(n->getContentSize().width / 2.0 - (lb->getContentSize().width / 2.0) - Default_Node_Offset_Width - icon->getContentSize().width - Default_Node_Offset_Width - Default_Node_Offset_Width,
+                    lb->setPosition(Point(- (n->getContentSize().width / 2.0) + (lb->getContentSize().width / 2.0) + Default_Node_Offset_Width + icon->getContentSize().width + Default_Node_Offset_Width + Default_Node_Offset_Width,
                                           titleY));
                     
                     //设置富文本位置
-                    txt->setPosition(Point(0, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
+                    txt->setPosition(Point(0 + Default_Node_Offset_Width, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
                 }
                     break;
-                    //DESK,   //同桌发送
-                case OptType::DESK:
-                {
-                    //添加标签图标
-                    auto icon = Sprite::create("res/icon-desk.png");
-                    n->addChild(icon, zTitleIcon, tTitleIcon);
-                    
-                    //添加标签文本
-                    auto lb = Label::createWithSystemFont(_title, Default_Font_Name, icon->getContentSize().height);
-                    lb->setColor(Default_SAY_Color);
-                    n->addChild(lb, zTitleLabel, tTitleLabel);
-                    
-                    //使用 空白 - 富文本高度 - 空白 - 标签 - 空白 确定容器高度
-                    Size containerSize = Size(Default_Max_Node_Width,
-                                              Default_Node_Offset_Height + lb->getContentSize().height + Default_Node_Offset_Height + txt->getContentSize().height + Default_Node_Offset_Height);
-                    
-                    n->setContentSize(containerSize);
-                    bg->setContentSize(containerSize);
-                    
-                    //设置标签位置
-                    float titleY = n->getContentSize().height / 2.0 - Default_Node_Offset_Height - (icon->getContentSize().height / 2.0);
-                    icon->setPosition(Point(n->getContentSize().width / 2.0 - (icon->getContentSize().width / 2.0) - Default_Node_Offset_Width - Default_Node_Offset_Width,
-                                            titleY));
-                    lb->setPosition(Point(n->getContentSize().width / 2.0 - (lb->getContentSize().width / 2.0) - Default_Node_Offset_Width - icon->getContentSize().width - Default_Node_Offset_Width - Default_Node_Offset_Width,
-                                          titleY));
-                    
-                    //设置富文本位置
-                    txt->setPosition(Point(0, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
-                }
-                    break;
-                    //SYSTEM  //系统信息
-                case OptType::SYSTEM:
                 default:
+                    return false;
                     break;
             }
         }
             break;
-        case OwnType::OTHER:
+        case FormType::CLEAR:
         {
-            auto bg = Scale9Sprite::create(Default_Cap_Insets, "res/say-other.png");
-            n->addChild(bg, zBg, tBg);
-            
+            //添加标签图标
+            Sprite* icon = nullptr;
             switch (_opt) {
-                    //ALL,    //全员发送，喇叭
                 case OptType::ALL:
                 {
-                    //添加标签图标
-                    auto icon = Sprite::create("res/icon-all.png");
+                    icon = Sprite::create("res/icon-all.png");
                     n->addChild(icon, zTitleIcon, tTitleIcon);
-                    
-                    //添加标签文本
-                    auto lb = Label::createWithSystemFont(_title, Default_Font_Name, icon->getContentSize().height);
-                    lb->setColor(Default_SAY_Color);
-                    n->addChild(lb, zTitleLabel, tTitleLabel);
-                    
-                    //使用 空白 - 富文本高度 - 空白 - 标签 - 空白 确定容器高度
-                    Size containerSize = Size(Default_Max_Node_Width,
-                                              Default_Node_Offset_Height + lb->getContentSize().height + Default_Node_Offset_Height + txt->getContentSize().height + Default_Node_Offset_Height);
-                    
-                    n->setContentSize(containerSize);
-                    bg->setContentSize(containerSize);
-                    
-                    //设置标签位置
-                    float titleY = n->getContentSize().height / 2.0 - Default_Node_Offset_Height - (icon->getContentSize().height / 2.0);
-                    icon->setPosition(Point( - (n->getContentSize().width / 2.0) + (icon->getContentSize().width / 2.0) + Default_Node_Offset_Width + Default_Node_Offset_Width,
-                                            titleY));
-                    lb->setPosition(Point(- (n->getContentSize().width / 2.0) + (lb->getContentSize().width / 2.0) + Default_Node_Offset_Width + icon->getContentSize().width + Default_Node_Offset_Width + Default_Node_Offset_Width,
-                                          titleY));
-                    
-                    //设置富文本位置
-                    txt->setPosition(Point(0 + Default_Node_Offset_Width, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
                 }
                     break;
-                    //ROOM,   //房间发送
                 case OptType::ROOM:
                 {
-                    //添加标签图标
-                    auto icon = Sprite::create("res/icon-room.png");
+                    icon = Sprite::create("res/icon-room.png");
                     n->addChild(icon, zTitleIcon, tTitleIcon);
-                    
-                    //添加标签文本
-                    auto lb = Label::createWithSystemFont(_title, Default_Font_Name, icon->getContentSize().height);
-                    lb->setColor(Default_SAY_Color);
-                    n->addChild(lb, zTitleLabel, tTitleLabel);
-                    
-                    //使用 空白 - 富文本高度 - 空白 - 标签 - 空白 确定容器高度
-                    Size containerSize = Size(Default_Max_Node_Width,
-                                              Default_Node_Offset_Height + lb->getContentSize().height + Default_Node_Offset_Height + txt->getContentSize().height + Default_Node_Offset_Height);
-                    
-                    n->setContentSize(containerSize);
-                    bg->setContentSize(containerSize);
-                    
-                    //设置标签位置
-                    float titleY = n->getContentSize().height / 2.0 - Default_Node_Offset_Height - (icon->getContentSize().height / 2.0);
-                    icon->setPosition(Point( - (n->getContentSize().width / 2.0) + (icon->getContentSize().width / 2.0) + Default_Node_Offset_Width + Default_Node_Offset_Width,
-                                            titleY));
-                    lb->setPosition(Point(- (n->getContentSize().width / 2.0) + (lb->getContentSize().width / 2.0) + Default_Node_Offset_Width + icon->getContentSize().width + Default_Node_Offset_Width + Default_Node_Offset_Width,
-                                          titleY));
-                    
-                    //设置富文本位置
-                    txt->setPosition(Point(0 + Default_Node_Offset_Width, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
                 }
                     break;
-                    //DESK,   //同桌发送
                 case OptType::DESK:
                 {
-                    //添加标签图标
-                    auto icon = Sprite::create("res/icon-desk.png");
+                    icon = Sprite::create("res/icon-desk.png");
                     n->addChild(icon, zTitleIcon, tTitleIcon);
-                    
-                    //添加标签文本
-                    auto lb = Label::createWithSystemFont(_title, Default_Font_Name, icon->getContentSize().height);
-                    lb->setColor(Default_SAY_Color);
-                    n->addChild(lb, zTitleLabel, tTitleLabel);
-                    
-                    //使用 空白 - 富文本高度 - 空白 - 标签 - 空白 确定容器高度
-                    Size containerSize = Size(Default_Max_Node_Width,
-                                              Default_Node_Offset_Height + lb->getContentSize().height + Default_Node_Offset_Height + txt->getContentSize().height + Default_Node_Offset_Height);
-                    
-                    n->setContentSize(containerSize);
-                    bg->setContentSize(containerSize);
-                    
-                    //设置标签位置
-                    float titleY = n->getContentSize().height / 2.0 - Default_Node_Offset_Height - (icon->getContentSize().height / 2.0);
-                    icon->setPosition(Point( - (n->getContentSize().width / 2.0) + (icon->getContentSize().width / 2.0) + Default_Node_Offset_Width + Default_Node_Offset_Width,
-                                            titleY));
-                    lb->setPosition(Point(- (n->getContentSize().width / 2.0) + (lb->getContentSize().width / 2.0) + Default_Node_Offset_Width + icon->getContentSize().width + Default_Node_Offset_Width + Default_Node_Offset_Width,
-                                          titleY));
-                    
-                    //设置富文本位置
-                    txt->setPosition(Point(0 + Default_Node_Offset_Width, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
                 }
                     break;
-                    //SYSTEM  //系统信息
                 case OptType::SYSTEM:
                 {
-                    //添加标签图标
-                    auto icon = Sprite::create("res/icon-system.png");
+                    icon = Sprite::create("res/icon-system.png");
                     n->addChild(icon, zTitleIcon, tTitleIcon);
-                    
-                    //添加标签文本
-                    auto lb = Label::createWithSystemFont(_title, Default_Font_Name, icon->getContentSize().height);
-                    lb->setColor(Default_SAY_Color);
-                    n->addChild(lb, zTitleLabel, tTitleLabel);
-                    
-                    //使用 空白 - 富文本高度 - 空白 - 标签 - 空白 确定容器高度
-                    Size containerSize = Size(Default_Max_Node_Width,
-                                              Default_Node_Offset_Height + lb->getContentSize().height + Default_Node_Offset_Height + txt->getContentSize().height + Default_Node_Offset_Height);
-                    
-                    n->setContentSize(containerSize);
-                    bg->setContentSize(containerSize);
-                    
-                    //设置标签位置
-                    float titleY = n->getContentSize().height / 2.0 - Default_Node_Offset_Height - (icon->getContentSize().height / 2.0);
-                    icon->setPosition(Point( - (n->getContentSize().width / 2.0) + (icon->getContentSize().width / 2.0) + Default_Node_Offset_Width + Default_Node_Offset_Width,
-                                            titleY));
-                    lb->setPosition(Point(- (n->getContentSize().width / 2.0) + (lb->getContentSize().width / 2.0) + Default_Node_Offset_Width + icon->getContentSize().width + Default_Node_Offset_Width + Default_Node_Offset_Width,
-                                          titleY));
-                    
-                    //设置富文本位置
-                    txt->setPosition(Point(0 + Default_Node_Offset_Width, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
                 }
                     break;
                 default:
                     break;
             }
+            
+            if (!icon) {
+                return false;
+            }
+            
+            //添加标签文本
+            auto lb = Label::createWithSystemFont(_title, Default_Font_Name, icon->getContentSize().height);
+            lb->setColor(Default_SAY_Color);
+            n->addChild(lb, zTitleLabel, tTitleLabel);
+            
+            //使用 空白 - 富文本高度 - 空白 - 标签 - 空白 确定容器高度
+            Size containerSize = Size(Default_Max_Node_Width,
+                                      Default_Node_Offset_Height + lb->getContentSize().height + Default_Node_Offset_Height + txt->getContentSize().height + Default_Node_Offset_Height);
+            
+            n->setContentSize(containerSize);
+            
+            //设置标签位置
+            float titleY = n->getContentSize().height / 2.0 - Default_Node_Offset_Height - (icon->getContentSize().height / 2.0);
+            icon->setPosition(Point( - (n->getContentSize().width / 2.0) + (icon->getContentSize().width / 2.0) + Default_Node_Offset_Width + Default_Node_Offset_Width,
+                                    titleY));
+            lb->setPosition(Point(- (n->getContentSize().width / 2.0) + (lb->getContentSize().width / 2.0) + Default_Node_Offset_Width + icon->getContentSize().width + Default_Node_Offset_Width + Default_Node_Offset_Width,
+                                  titleY));
+            
+            //设置富文本位置
+            txt->setPosition(Point(0 + Default_Node_Offset_Width, - (n->getContentSize().height / 2.0) + Default_Node_Offset_Height + (txt->getContentSize().height / 2.0)));
+            
         }
-            break;
         default:
             break;
     }
+    
     
     return true;
 }

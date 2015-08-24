@@ -151,6 +151,7 @@ TableViewCell* RTChatList::tableCellAtIndex(TableView *table, ssize_t idx)
         
         cell->setContentSize(Size(table->getContentSize().width, Default_Cell_Offset_Height + n->getContentSize().height + Default_Cell_Offset_Height));
         
+#if COCOS2D_DEBUG
         if (idx % 2 == 0) {
             DbgHelper::colorRect(cell,
                                  Point(cell->getContentSize().width / 2.0, cell->getContentSize().height / 2.0), cell->getContentSize(),
@@ -161,12 +162,18 @@ TableViewCell* RTChatList::tableCellAtIndex(TableView *table, ssize_t idx)
                                  Point(cell->getContentSize().width / 2.0, cell->getContentSize().height / 2.0), cell->getContentSize(),
                                  Color4F::YELLOW);
         }
+#endif
         
-        if (n->getOwnType() == RTChatNode::OwnType::SELF) {
-            n->setPosition(Point(cell->getContentSize().width / 2.0 + Default_Cell_Offset_Width, cell->getContentSize().height / 2.0));
+        if (n->getFormType() == RTChatNode::FormType::BORDERED) {
+            if (n->getOwnType() == RTChatNode::OwnType::SELF) {
+                n->setPosition(Point(cell->getContentSize().width / 2.0 + Default_Cell_Offset_Width, cell->getContentSize().height / 2.0));
+            }
+            else {
+                n->setPosition(Point(cell->getContentSize().width / 2.0 - Default_Cell_Offset_Width, cell->getContentSize().height / 2.0));
+            }
         }
         else {
-            n->setPosition(Point(cell->getContentSize().width / 2.0 - Default_Cell_Offset_Width, cell->getContentSize().height / 2.0));
+            n->setPosition(Point(cell->getContentSize().width / 2.0, cell->getContentSize().height / 2.0));
         }
         
         cell->addChild(n);
