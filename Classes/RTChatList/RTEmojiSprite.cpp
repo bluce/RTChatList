@@ -26,15 +26,14 @@ bool RTEmojiSprite::init(int emojiId, cocos2d::Size size)
 {
     _emojiId = emojiId;
     _size = size;
-    
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("res/emoji.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("chat/emoji.plist");
     
     auto spf = SpriteFrameCache::getInstance()->getSpriteFrameByName(StringUtils::format("emoji_%d_%02d.png", _emojiId, 1));
     if (!spf) {
         return false;
     }
     
-    if (! this->initWithSpriteFrame(spf) ) {
+    if (!this->initWithSpriteFrame(spf)) {
         return false;
     }
     
@@ -48,9 +47,7 @@ void RTEmojiSprite::onEnter()
 {
     Sprite::onEnter();
     
-    
     Vector<cocos2d::SpriteFrame *> frames;
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("res/emoji.plist");
     
     for (int i = 1; i < 30; i++) {
         auto spf = SpriteFrameCache::getInstance()->getSpriteFrameByName(StringUtils::format("emoji_%d_%02d.png", _emojiId, i));

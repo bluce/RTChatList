@@ -17,21 +17,23 @@ class RTChatNode : public cocos2d::Node
 public:
     
     typedef enum : int {
-        CLEAR,   //自己发送的话
-        BORDERED   //收到其他人发送的话
+        CLEAR,          //透明无背景
+        BORDERED,       //左右箭头背景
+        POP             //向下箭头背景
     } FormType;
     
     typedef enum : int {
-        SELF,   //自己发送的话
-        OTHER   //收到其他人发送的话
+        SELF,           //自己发送的话
+        OTHER           //收到其他人发送的话
     } OwnType;
     
+    //1 同桌,2 同一种房间, 如新手房,3 喇叭 4 系统公告
     typedef enum : int {
-        NONE,   //未知类型，错误
-        ALL,    //全员发送，喇叭
-        ROOM,   //房间发送
-        DESK,   //同桌发送
-        SYSTEM  //系统信息
+        NONE = 0,       //未知类型，错误
+        DESK = 1,       //同桌发送
+        ROOM = 2,       //房间发送
+        ALL = 3,        //全员发送，喇叭
+        SYSTEM = 4      //系统信息
     } OptType;
     
     RTChatNode();
@@ -60,6 +62,10 @@ public:
     const std::string getContent() const { return _content; }
     const float getWidth() const { return _width; }
     const float getWidthOffset() const { return _widthOffset; }
+    
+#if COCOS2D_DEBUG
+    bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event);
+#endif
     
 private:
     

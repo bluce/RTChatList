@@ -27,10 +27,15 @@ public:
     
     static RTChatList* create(Size size, Node *container = nullptr);
     
-    void pushNode(class RTChatNode* n);
+    static void setMaxCount(int count);
+    
+    void pushNode(class RTChatNode* n, bool autoRefresh = true);
+    void clearNodes();
+    void scrollToBottom();
     
 protected:
     
+    static int _maxCount;
     Vector<class RTChatNode*> _sayNodeList;
     
     
@@ -110,8 +115,6 @@ protected:
      * @return number of cells
      */
     virtual ssize_t numberOfCellsInTableView(TableView *table);
-    
-    
 };
 
 #endif /* defined(__MyCppGame__RTChatList__) */

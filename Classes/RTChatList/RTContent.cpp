@@ -154,7 +154,8 @@ namespace ui {
     _formatTextDirty(true),
     _leftSpaceWidth(0.0f),
     _verticalSpace(0.0f),
-    _elementRenderersContainer(nullptr)
+    _elementRenderersContainer(nullptr),
+    _calcWidth(0.0)
     {
         
     }
@@ -314,39 +315,138 @@ namespace ui {
             textRenderer = Label::createWithSystemFont(text, fontName, fontSize);
         }
         float textRendererWidth = textRenderer->getContentSize().width;
-        _leftSpaceWidth -= textRendererWidth;
-        if (_leftSpaceWidth < 0.0f)
+        float tmpLeftSpaceWidth = _leftSpaceWidth;
+        tmpLeftSpaceWidth -= textRendererWidth;
+        if (tmpLeftSpaceWidth < 0.0f)
         {
-            float overstepPercent = (-_leftSpaceWidth) / textRendererWidth;
+            //percent cut words
+            float overstepPercent = (-tmpLeftSpaceWidth) / textRendererWidth;
             std::string curText = text;
             size_t stringLength = StringUtils::getCharacterCountInUTF8String(text);
             int leftLength = stringLength * (1.0f - overstepPercent);
-            std::string leftWords = Helper::getSubStringOfUTF8String(curText,0,leftLength);
+            std::string leftWords = Helper::getSubStringOfUTF8String(curText, 0, leftLength);
             std::string cutWords = Helper::getSubStringOfUTF8String(curText, leftLength, stringLength - leftLength);
-            if (leftLength > 0)
-            {
-                Label* leftRenderer = nullptr;
+            
+            Label* leftRenderer = nullptr;
+            
+            if (leftWords.length() > 0) {
+                
                 if (fileExist)
                 {
-                    leftRenderer = Label::createWithTTF(Helper::getSubStringOfUTF8String(leftWords, 0, leftLength), fontName, fontSize);
+                    leftRenderer = Label::createWithTTF(leftWords, fontName, fontSize);
                 }
                 else
                 {
-                    leftRenderer = Label::createWithSystemFont(Helper::getSubStringOfUTF8String(leftWords, 0, leftLength), fontName, fontSize);
-                }
-                if (leftRenderer)
-                {
-                    leftRenderer->setColor(color);
-                    leftRenderer->setOpacity(opacity);
-                    pushToContainer(leftRenderer);
+                    leftRenderer = Label::createWithSystemFont(leftWords, fontName, fontSize);
                 }
             }
             
+            if (!leftRenderer) {
+                return;
+            }
+            
+            // 处理需截文本字宽度不均，前半部分超出的情况 例如 "测试文本测试文本12341234"，取宽度10/16 前半部分宽度10则超出很多
+            while (true) {
+                if (leftWords.length() > 0)
+                {
+                    leftRenderer->setString(leftWords);
+                    
+                    float leftRendererWidth = leftRenderer->getContentSize().width;
+                    tmpLeftSpaceWidth = _leftSpaceWidth;
+                    tmpLeftSpaceWidth -= leftRendererWidth;
+                    
+                    if (tmpLeftSpaceWidth < 0.0f) {
+                        int leftWordsLen = (int)leftWords.length();
+                        if (leftWordsLen <= 0) {
+                            break;
+                        }
+                        else {
+                            //cut char one by one to get the fit length
+                            while (true) {
+                                leftLength -= 1;
+                                leftWords = Helper::getSubStringOfUTF8String(curText, 0, leftLength);
+                                cutWords = Helper::getSubStringOfUTF8String(curText, leftLength, stringLength - leftLength);
+                                if (leftWords.length() == 0) {
+                                    break;
+                                }
+                                if (leftWords.length() < leftWordsLen) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        //if _leftSpaceWidth > 0 break
+                        break;
+                    }
+                }
+                else {
+                    //if leftWords is empty, break
+                    break;
+                }
+            }
+            
+            // 处理需截文本字宽度不均，后半部分超出的情况 例如 "12341234测试文本测试文本"，取宽度10/16 前半部分宽度10则缺少很多
+            std::string lastLeftWords = leftWords;
+            std::string lastCutWords = cutWords;
+            float lastTmpLeftSpaceWidth = tmpLeftSpaceWidth;
+            while (true) {
+                if (cutWords.length() > 0)
+                {
+                    int leftWordsLen = (int)leftWords.length();
+                    while (true) {
+                        leftLength += 1;
+                        leftWords = Helper::getSubStringOfUTF8String(curText, 0, leftLength);
+                        cutWords = Helper::getSubStringOfUTF8String(curText, leftLength, stringLength - leftLength);
+                        if (cutWords.length() == 0) {
+                            break;
+                        }
+                        if (leftWords.length() > leftWordsLen) {
+                            break;
+                        }
+                    }
+                    
+                    leftRenderer->setString(leftWords);
+                    
+                    float leftRendererWidth = leftRenderer->getContentSize().width;
+                    tmpLeftSpaceWidth = _leftSpaceWidth;
+                    tmpLeftSpaceWidth -= leftRendererWidth;
+                    
+                    if (tmpLeftSpaceWidth < 0.0f) {
+                        leftWords = lastLeftWords;
+                        cutWords = lastCutWords;
+                        tmpLeftSpaceWidth = lastTmpLeftSpaceWidth;
+                        leftRenderer->setString(leftWords);
+                        break;
+                    }
+                    else {
+                        lastLeftWords = leftWords;
+                        lastCutWords = cutWords;
+                        lastTmpLeftSpaceWidth = tmpLeftSpaceWidth;
+                    }
+                }
+                else {
+                    //if cutWords is empty, break
+                    leftWords = lastLeftWords;
+                    cutWords = lastCutWords;
+                    tmpLeftSpaceWidth = lastTmpLeftSpaceWidth;
+                    leftRenderer->setString(leftWords);
+                    break;
+                }
+            }
+            
+            _leftSpaceWidth = tmpLeftSpaceWidth;
+            leftRenderer->setColor(color);
+            leftRenderer->setOpacity(opacity);
+            pushToContainer(leftRenderer);
+            
+            _leftSpaceWidth = tmpLeftSpaceWidth;
             addNewLine();
             handleTextRenderer(cutWords.c_str(), fontName, fontSize, color, opacity);
         }
         else
         {
+            _leftSpaceWidth = tmpLeftSpaceWidth;
             textRenderer->setColor(color);
             textRenderer->setOpacity(opacity);
             pushToContainer(textRenderer);
@@ -361,7 +461,7 @@ namespace ui {
     
     void RTContent::handleCustomRenderer(cocos2d::Node *renderer)
     {
-        Size imgSize = renderer->getContentSize();
+        Size imgSize = renderer->getBoundingBox().size;
         _leftSpaceWidth -= imgSize.width;
         if (_leftSpaceWidth < 0.0f)
         {
@@ -415,7 +515,7 @@ namespace ui {
                 for (ssize_t j=0; j<row->size(); j++)
                 {
                     Node* l = row->at(j);
-                    maxHeight = MAX(l->getContentSize().height, maxHeight);
+                    maxHeight = MAX(l->getBoundingBox().size.height, maxHeight);
                 }
                 maxHeights[i] = maxHeight;
                 newContentSizeHeight += maxHeights[i];
@@ -435,7 +535,10 @@ namespace ui {
                     l->setAnchorPoint(Vec2::ZERO);
                     l->setPosition(nextPosX, nextPosY);
                     _elementRenderersContainer->addChild(l, 1);
-                    nextPosX += l->getContentSize().width;
+                    nextPosX += l->getBoundingBox().size.width;
+                    if (nextPosX > _calcWidth) {
+                        _calcWidth = nextPosX;
+                    }
                 }
             }
             _elementRenderersContainer->setContentSize(_customSize);

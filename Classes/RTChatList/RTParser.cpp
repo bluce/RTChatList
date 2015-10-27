@@ -4,15 +4,40 @@
 #include "cocos2d.h"
 #include "cocos-ext.h"
 #include "json/document.h"
-#include "FileUtilsExtension.h"
 
-#define Default_Font_Size   32.0
-#define Default_Font_Color  Color3B::WHITE
-#define Default_Font_Alpha  255
-#define Default_Font_Name   "Arial"
+#define kBarrage    "barrage"
+#define kSay        "say"
+#define kShow       "show"
 
-bool RTParser::pushElements(RTContent *rt, const std::string &json)
+bool RTParser::pushElements(RTContent* rt,
+                            const std::string& json,
+                            const DesType config,
+                            const std::string& fontName,
+                            const Color3B& fontColor,
+                            const float fontSize,
+                            const Size& imgSize,
+                            const GLubyte alpha)
 {
+    std::string _fontName = fontName;
+    Color3B _fontColor = fontColor;
+    float _fontSize = fontSize;
+    Size _imgSize = imgSize;
+    GLubyte _alpha = alpha;
+    std::string key = "";
+    switch (config) {
+        case DesType::Barrage:
+            key = kBarrage;
+            break;
+        case DesType::Say:
+            key = kSay;
+            break;
+        case DesType::Show:
+            key = kShow;
+            break;
+        default:
+            break;
+    }
+    
     rapidjson::Document jsonDoc;
     jsonDoc.Parse<0>(json.c_str());
     
@@ -34,7 +59,7 @@ bool RTParser::pushElements(RTContent *rt, const std::string &json)
         }
         
         std::string type = "";      //类型
-        int emojiId = -1;                //表情id
+        int emojiId = -1;           //表情id
         std::string txt = "";       //文本
         
         rapidjson::Value& jtype = jvo["type"];
@@ -44,7 +69,7 @@ bool RTParser::pushElements(RTContent *rt, const std::string &json)
             }
         }
         
-        if ("" == type) {
+        if ("" == type || "t" == type) {
             rapidjson::Value& jtxt = jvo["t"];
             if (jtxt.IsString()) {
                 if (jtxt.GetString()) {
@@ -62,73 +87,80 @@ bool RTParser::pushElements(RTContent *rt, const std::string &json)
             }
         }
         
+        
         if ("t" == type) {
             //文本节点
-//            "s": 20,            - 文本节点的字体大小，不填使用默认值
-//            "c": "#ffffffff"    - 文本节点的字体颜色，不填使用默认值，顺序为rgba
-            float fsize = Default_Font_Size;
-            Color3B color = Default_Font_Color;
-            GLubyte alpha = Default_Font_Alpha;
-            
-            rapidjson::Value& jtsize = jvo["s"];
-            if (jtsize.IsDouble()) {
-                fsize = jtsize.GetDouble();
-            }
-            else if (jtsize.IsInt()) {
-                fsize = jtsize.GetInt();
-            }
-            
-            rapidjson::Value& jcolor = jvo["c"];
-            if (jcolor.IsString()) {
-                std::string sc = jcolor.GetString();
-                if (sc.length() == 9) {
-                    char* end = NULL;
-                    
-                    std::string sr = sc.substr(1, 2);
-                    end = NULL;
-                    int r = static_cast<int>(strtol(sr.c_str(), &end, 16));
-                    
-                    std::string sg = sc.substr(3, 2);
-                    end = NULL;
-                    int g = static_cast<int>(strtol(sg.c_str(), &end, 16));
-                    
-                    std::string sb = sc.substr(5, 2);
-                    end = NULL;
-                    int b = static_cast<int>(strtol(sb.c_str(), &end, 16));
-                    
-                    std::string sa = sc.substr(7, 2);
-                    end = NULL;
-                    int a = static_cast<int>(strtol(sa.c_str(), &end, 16));
-                    
-                    color = Color3B(r, g, b);
-                    alpha = a;
+            rapidjson::Value& jstyle = jvo[key.c_str()];
+            Color3B _remoteFontColor = _fontColor;
+            if (jstyle.IsObject()) {
+                rapidjson::Value& jfn = jstyle["fn"];
+                if (jfn.IsString()) {
+                    _fontName = jfn.GetString();
+                }
+                
+                rapidjson::Value& jtsize = jstyle["s"];
+                if (jtsize.IsDouble()) {
+                    _fontSize = jtsize.GetDouble();
+                }
+                else if (jtsize.IsInt()) {
+                    _fontSize = jtsize.GetInt();
+                }
+                
+                rapidjson::Value& jcolor = jstyle["c"];
+                if (jcolor.IsString()) {
+                    std::string sc = jcolor.GetString();
+                    if (sc.length() == 9) {
+                        char* end = NULL;
+                        
+                        std::string sr = sc.substr(1, 2);
+                        end = NULL;
+                        int r = static_cast<int>(strtol(sr.c_str(), &end, 16));
+                        
+                        std::string sg = sc.substr(3, 2);
+                        end = NULL;
+                        int g = static_cast<int>(strtol(sg.c_str(), &end, 16));
+                        
+                        std::string sb = sc.substr(5, 2);
+                        end = NULL;
+                        int b = static_cast<int>(strtol(sb.c_str(), &end, 16));
+                        
+                        std::string sa = sc.substr(7, 2);
+                        end = NULL;
+                        int a = static_cast<int>(strtol(sa.c_str(), &end, 16));
+                        
+                        _remoteFontColor = Color3B(r, g, b);
+                        _alpha = a;
+                    }
                 }
             }
             
-            rt->pushBackElement(RTElementText::create(i, color, alpha, txt, Default_Font_Name, fsize));
+            rt->pushBackElement(RTElementText::create(i, _remoteFontColor, _alpha, txt, _fontName, _fontSize));
         }
         else if ("e" == type) {
             //表情节点
-            float fw = Default_Font_Size;
-            float fh = Default_Font_Size;
             
-            rapidjson::Value& jw = jvo["w"];
-            if (jw.IsDouble()) {
-                fw = jw.GetDouble();
-            }
-            else if (jw.IsInt()) {
-                fw = jw.GetInt();
+            rapidjson::Value& jstyle = jvo[key.c_str()];
+            
+            if (jstyle.IsObject()) {
+                
+                rapidjson::Value& jw = jstyle["w"];
+                if (jw.IsDouble()) {
+                    _imgSize.width = jw.GetDouble();
+                }
+                else if (jw.IsInt()) {
+                    _imgSize.width = jw.GetInt();
+                }
+                
+                rapidjson::Value& jh = jstyle["h"];
+                if (jh.IsDouble()) {
+                    _imgSize.height = jh.GetDouble();
+                }
+                else if (jh.IsInt()) {
+                    _imgSize.height = jh.GetInt();
+                }
             }
             
-            rapidjson::Value& jh = jvo["h"];
-            if (jh.IsDouble()) {
-                fh = jh.GetDouble();
-            }
-            else if (jh.IsInt()) {
-                fh = jh.GetInt();
-            }
-            
-            rt->pushBackElement(RTElementEmoji::create(i, Default_Font_Color, Default_Font_Alpha, Size(fw, fh), emojiId));
+            rt->pushBackElement(RTElementEmoji::create(i, _fontColor, _alpha, _imgSize, emojiId));
         }
     }
     

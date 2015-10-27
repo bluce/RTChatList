@@ -10,9 +10,8 @@
 #include "DbgHelper.h"
 #include "RTChatNode.h"
 
-#define Default_Cell_Offset_Height 10
-#define Default_Cell_Offset_Width 15
-
+#define Default_Cell_Offset_Height  5
+#define Default_Cell_Offset_Width   0
 
 RTChatList::RTChatList()
 {
@@ -21,7 +20,7 @@ RTChatList::RTChatList()
 
 RTChatList::~RTChatList()
 {
-    
+    _sayNodeList.clear();
 }
 
 RTChatList* RTChatList::create(cocos2d::Size size, cocos2d::Node *container)
@@ -34,6 +33,7 @@ RTChatList* RTChatList::create(cocos2d::Size size, cocos2d::Node *container)
         pRet->setDataSource(pRet);
         pRet->_updateCellPositions();
         pRet->_updateContentSize();
+        pRet->setVerticalFillOrder(VerticalFillOrder::TOP_DOWN);
         return pRet;
     }
     else
@@ -44,10 +44,65 @@ RTChatList* RTChatList::create(cocos2d::Size size, cocos2d::Node *container)
     }
 }
 
-void RTChatList::pushNode(class RTChatNode *n)
+int RTChatList::_maxCount = 50;
+void RTChatList::setMaxCount(int count)
 {
+    RTChatList::_maxCount = count;
+}
+
+void RTChatList::pushNode(class RTChatNode *n, bool autoRefresh)
+{
+    if (!autoRefresh) {
+        _sayNodeList.pushBack(n);
+        if (_sayNodeList.size() > _maxCount) {
+            _sayNodeList.erase(0);
+        }
+        return;
+    }
+    
+    Rect rb = this->getContainer()->getBoundingBox();
+    
     _sayNodeList.pushBack(n);
+    if (_sayNodeList.size() > _maxCount) {
+        _sayNodeList.erase(0);
+    }
     this->reloadData();
+    
+    Rect ra = this->getContainer()->getBoundingBox();
+    
+    if (ra.size.height < this->getBoundingBox().size.height) {
+        return;
+    }
+    
+    if (ra.size.height > this->getBoundingBox().size.height
+        && rb.size.height < this->getBoundingBox().size.height) {
+        this->setContentOffset(Point::ZERO);
+        return;
+    }
+    
+    if (rb.origin.y == 0) {
+        this->setContentOffset(Point::ZERO);
+    }
+    else {
+        this->setContentOffset(Point(0, rb.origin.y - (ra.size.height - rb.size.height)));
+    }
+}
+
+void RTChatList::clearNodes()
+{
+    _sayNodeList.clear();
+    this->reloadData();
+}
+
+void RTChatList::scrollToBottom()
+{
+    Rect ra = this->getContainer()->getBoundingBox();
+    if (ra.size.height >= this->getBoundingBox().size.height) {
+        this->setContentOffset(Point::ZERO);
+    }
+    else {
+        this->setContentOffset(Point(0, this->getBoundingBox().size.height - ra.size.height));
+    }
 }
 
 #pragma mark - TableViewDelegate
@@ -116,7 +171,12 @@ void RTChatList::tableCellWillRecycle(TableView* table, TableViewCell* cell)
  */
 Size RTChatList::tableCellSizeForIndex(TableView *table, ssize_t idx) {
     RTChatNode* sn = _sayNodeList.at(idx);
-    return Size(0, Default_Cell_Offset_Height + sn->getContentSize().height + Default_Cell_Offset_Height);
+    if (sn->getFormType() == RTChatNode::FormType::CLEAR) {
+        return Size(0, sn->getContentSize().height);
+    }
+    else {
+        return Size(0, Default_Cell_Offset_Height + sn->getContentSize().height + Default_Cell_Offset_Height);
+    }
 }
 
 /**
@@ -149,7 +209,12 @@ TableViewCell* RTChatList::tableCellAtIndex(TableView *table, ssize_t idx)
         auto n = _sayNodeList.at(idx);
         n->removeFromParent();
         
-        cell->setContentSize(Size(table->getContentSize().width, Default_Cell_Offset_Height + n->getContentSize().height + Default_Cell_Offset_Height));
+        if (n->getFormType() == RTChatNode::FormType::CLEAR) {
+            cell->setContentSize(Size(table->getContentSize().width, n->getContentSize().height));
+        }
+        else {
+            cell->setContentSize(Size(table->getContentSize().width, Default_Cell_Offset_Height + n->getContentSize().height + Default_Cell_Offset_Height));
+        }
         
 #if COCOS2D_DEBUG
         if (idx % 2 == 0) {

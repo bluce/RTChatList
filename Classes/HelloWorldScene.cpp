@@ -1,9 +1,6 @@
 #include "HelloWorldScene.h"
 
-#include "RTParser.h"
-#include "DbgHelper.h"
-#include "RTChatList.h"
-#include "RTEmojiSprite.h"
+
 
 USING_NS_CC;
 
@@ -56,7 +53,7 @@ bool HelloWorld::init()
 {
     //////////////////////////////
     // 1. super init first
-    if ( !LayerColor::initWithColor(Color4B::WHITE) )
+    if ( !LayerColor::initWithColor(Color4B::GRAY) )
     {
         return false;
     }
@@ -67,13 +64,13 @@ bool HelloWorld::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     Point center = Point(visibleSize.width / 2.0, visibleSize.height / 2.0);
     Size size = Size(460, 460);
-    std::string json = FileUtils::getInstance()->getStringFromFile("res/test.json");
+    std::string json = FileUtils::getInstance()->getStringFromFile("chat/test2.json");
     
     //test animate
 #if 0
     Size s = Size(80, 80);
     Vector<cocos2d::SpriteFrame *> frames;
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("res/emoji.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("chat/emoji.plist");
     for (int i = 0; i < 30; i++) {
         auto spf = SpriteFrameCache::getInstance()->getSpriteFrameByName(StringUtils::format("emoji_%d_%02d.png", 1, i));
         if (!spf) {
@@ -154,5 +151,126 @@ bool HelloWorld::init()
     this->addChild(s);
 #endif
     
+    auto b = Button::create("chat/desk-pop-bg.png");
+    b->setPosition(Point(b->getContentSize()));
+    this->addChild(b);
+    b->addTouchEventListener([=] (Ref* r, Widget::TouchEventType t) {
+        switch (t) {
+            case Widget::TouchEventType::ENDED:
+            {
+                ChatMsg cmsg = ChatMsg(RTChatNode::OptType::DESK,
+                                       json,
+                                       "[Hello World]",
+                                       RTChatNode::OwnType::SELF);
+                this->pushBarrage(cmsg);
+            }
+                break;
+            default:
+                break;
+        }
+    });
+    
     return true;
+}
+
+#pragma mark -
+
+
+
+void HelloWorld::pushBarrage(ChatMsg msg)
+{
+    _barrageMsgList.push_back(msg);
+    showBarrage();
+}
+
+void HelloWorld::showBarrage()
+{
+    const int lineCount = 10;
+    int pos = -1;
+    
+    if (_barrageMsgList.size() <= 0) {
+        return;
+    }
+    
+    //init
+    if (_barrageLines.size() < lineCount) {
+        for (int i = 0; i < lineCount; i++) {
+            _barrageLines.insert(std::pair<int, bool>(i, false));
+        }
+    }
+    
+    //get idle pos
+    for (int i = 0; i < _barrageLines.size(); i++) {
+        if (false == _barrageLines[i]) {
+            _barrageLines.erase(i);
+            _barrageLines.insert(std::pair<int, bool>(i, true));
+            pos = i;
+            break;
+        }
+    }
+    
+    if (-1 != pos)
+    {
+        //get first msg
+        auto itmsg = _barrageMsgList.begin();
+        auto msg = *itmsg;
+        _barrageMsgList.erase(itmsg);
+        
+        srand((unsigned)time(0));
+        int r = rand() % 40;
+        int randompos = 500 + r;
+        
+        float top = randompos - (pos * 40);
+        auto txt = RTContent::create();
+        this->addChild(txt, 100);
+        txt->ignoreContentAdaptWithSize(true);
+        
+        switch (msg.opt) {
+            case RTChatNode::OptType::ALL:
+            {
+                txt->pushBackElement(RTElementText::create(0, Color3B::BLACK, 255, StringUtils::format("%s", msg.title.c_str()).c_str(), "Arial", 30));
+            }
+                break;
+            case RTChatNode::OptType::SYSTEM:
+            {
+                txt->pushBackElement(RTElementText::create(0, Color3B::BLACK, 255, StringUtils::format("%s", msg.title.c_str()).c_str(), "Arial", 30));
+            }
+                break;
+            default:
+                break;
+        }
+        
+        RTParser::pushElements(txt, msg.json, RTParser::DesType::Barrage, "", Color3B::WHITE, 30, Size(44, 44), 255);
+        txt->formatText();
+        
+        Size visibleSize = Director::getInstance()->getWinSize();
+        Size s = txt->getContentSize();
+        txt->setPosition(Point(visibleSize.width + (s.width / 2.0), top));
+        
+        auto actionTo = MoveTo::create(10, Point(-(s.width), top));
+        auto actend = CallFunc::create([=]() {
+            txt->removeFromParent();
+        });
+        auto actseq = Sequence::create(actionTo, actend, NULL);
+        
+        DelayTime *de = DelayTime::create(5);
+        auto cal= CallFunc::create([=]() {
+            this->_barrageLines.erase(pos);
+            this->_barrageLines.insert(std::pair<int, bool>(pos, false));
+            this->showBarrage();
+        });
+        auto deseq = Sequence::create(de, cal, NULL);
+        
+        auto spa = Spawn::create(actseq, deseq, NULL);
+        txt->runAction(spa);
+    }
+    else {
+        if (_barrageMsgList.size() > (lineCount * 2)) {
+            for (int i = 0; i < _barrageLines.size(); i++) {
+                _barrageLines.erase(i);
+                _barrageLines.insert(std::pair<int, bool>(i, false));
+            }
+            this->showBarrage();
+        }
+    }
 }

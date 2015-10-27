@@ -111,7 +111,7 @@ namespace ui {
     {
     public:
         RTElementEmoji(){_type = Type::CUSTOM;};
-        virtual ~RTElementEmoji(){CC_SAFE_RELEASE(_customNode);};
+        virtual ~RTElementEmoji(){};
         bool init(int tag, const Color3B& color, GLubyte opacity, Size s, int emojiId);
         static RTElementEmoji* create(int tag, const Color3B& color, GLubyte opacity, Size s, int emojiId);
         
@@ -137,6 +137,7 @@ namespace ui {
         void formatText();
         virtual void ignoreContentAdaptWithSize(bool ignore);
         virtual std::string getDescription() const override;
+        float getCalcWidth() { return _calcWidth; }
         
     CC_CONSTRUCTOR_ACCESS:
         virtual bool init() override;
@@ -157,6 +158,7 @@ namespace ui {
         std::vector<Vector<Node*>*> _elementRenders;
         float _leftSpaceWidth;
         float _verticalSpace;
+        float _calcWidth;
         Node* _elementRenderersContainer;
     };
     

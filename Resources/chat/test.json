@@ -1,0 +1,1 @@
+[{"t":"测试文本1测试文本","type":"t","barrage":{"s":30,"c":"#ffffffff"},"say":{"s":20,"c":"#000000ff"},"show":{"s":20,"c":"#ffffffff"}},{"t":"测试文本2测试文本","type":"t","barrage":{"s":30,"c":"#000000ff"},"say":{"s":20,"c":"#ffffffff"},"show":{"s":20,"c":"#000000ff"}},{"e":2,"type":"e","barrage":{"w":44,"h":44},"say":{"w":30,"h":30},"show":{"w":30,"h":30}}]
